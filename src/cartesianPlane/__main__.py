@@ -67,7 +67,7 @@ class CartesianPlane:
         return round(dimention * self.scale_factor)
 
     def is_in_screen(self, point : list | tuple, width : int = 1, height : int = 1) -> bool:
-        """Check if a point or a rect is in the screen
+        """Check if a point or a rectangle is in the screen
 
         Args:
             point (list | tuple): The left-top point of the rect

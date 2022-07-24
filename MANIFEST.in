@@ -1,0 +1,11 @@
+# Test files
+exclude cartesian-plane/tests
+
+# Virtual Enviromment files
+exclude cartesian-plane/Scripts cartesian-plane/include cartesian-plane/Lib cartesian-plane/pyvenv.cfg
+
+# Vs Code Files
+exclude cartesian-plane/.vscode
+
+# Git files
+exclude cartesian-plane/.gitattributes cartesian-plane/.gitignore

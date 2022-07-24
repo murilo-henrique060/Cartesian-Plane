@@ -11,12 +11,12 @@ pygame.init()
 screen = pygame.display.set_mode()
 pygame.display.set_caption('Cartesian Plane')
 
-plane = cartesian_plane.cartesianPlane(screen)
+plane = cartesianPlane.cartesianPlane(screen)
 
-circle = cartesian_plane.cartesianObject.Circle(plane, RED, [0, 0], 10)
-rect = cartesian_plane.cartesianObject.Rect(plane, GREEN, [20, 10, 10, 10])
-line = cartesian_plane.cartesianObject.Line(plane, BLUE, [40, 0], [10, 10])
-path = cartesian_plane.cartesianObject.Path(plane, YELLOW, [0, 0], [10, 10], [20, 20])
+circle = cartesianPlane.cartesianObject.Circle(plane, RED, [0, 0], 10)
+rect = cartesianPlane.cartesianObject.Rect(plane, GREEN, [20, 10, 10, 10])
+line = cartesianPlane.cartesianObject.Line(plane, BLUE, [40, 0], [10, 10])
+path = cartesianPlane.cartesianObject.Path(plane, YELLOW, [0, 0], [10, 10], [20, 20])
 
 while True:
     for event in pygame.event.get():
