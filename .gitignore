@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Vs Code configuration files
+.vscode/
+
+# Enviroment directory
+include/
+Scripts/
+
+# Pyenv config
+pyvenv.cfg
+
 # C extensions
 *.so
 
