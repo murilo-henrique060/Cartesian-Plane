@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cartesian-plane"
-version = "1.0.0"
+version = "1.0.1"
 description = "Provides a cartesian plane canvas able to move and zooming in pygame."
 readme = "README.md"
 authors = [{ name = "murilo-henrique060", email = "henrique.henryconde@gmail.com" }]

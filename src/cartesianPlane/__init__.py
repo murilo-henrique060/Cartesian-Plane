@@ -4,7 +4,7 @@ from cartesianPlane.cartesianObjects import *
 from cartesianPlane.colors import *
 
 # Version of the Cartesian Plane package
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 class CartesianPlane:
     def __init__(self, screen):
