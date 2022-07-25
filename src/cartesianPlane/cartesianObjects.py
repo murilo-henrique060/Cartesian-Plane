@@ -1,18 +1,18 @@
 import pygame
 
 class Circle:
-    def __init__(self, plane, color: tuple | list, center : list, radius : int | float, width : int = 0):
+    def __init__(self, plane, color: tuple | list, center : tuple | list, radius : int | float, width : int = 0):
         """Create a Circle Object on the Cartesian Plane
 
         Args:
             plane (Cartesian Plane): The Cartesian Plane
             color (tuple | list): The color of the circle
-            center (list): The position of the center of the circle
+            center (tuple | list): The position of the center of the circle
             radius (int | float): The radius of the circle
             width (int, optional): Width of the border of the circle. 0 to fill the object. Defaults to 0.
         """
         self.plane = plane
-        self.center = center
+        self.center = [*center]
         self.radius = radius
         self.color = color
         self.width = width
@@ -26,18 +26,17 @@ class Circle:
         center = self.plane.plane_to_screen(self.center)
         radius = self.plane.scale(self.radius)
 
-        if self.plane.is_in_screen([self.center[0] - self.radius, self.center[1], self.radius], self.radius * 2, self.radius * 2):
-            # Draw the circle
-            pygame.draw.circle(self.plane.screen, self.color, center, radius, self.width)
+        # Draw the circle
+        pygame.draw.circle(self.plane.screen, self.color, center, radius, self.width)
 
 class Rect:
-    def __init__(self, plane, color : tuple | list, rect : list, width : int = 0):
+    def __init__(self, plane, color : tuple | list, rect : tuple | list, width : int = 0):
         """Create a Rectangle Object on the Cartesian Plane
 
         Args:
             plane (Cartesian Plane): The Cartesian Plane
             color (tuple | list): The color of the rectangle
-            rect (list): The rectangle dimentions. [x, y, width, height]
+            rect (tuple | list): The rectangle dimentions. [x, y, width, height]
             width (int, optional): Width of the border of the rectangle. 0 to fill the object. Defaults to 0.
         """
         self.plane = plane
@@ -57,24 +56,23 @@ class Rect:
         width = self.plane.scale(self.width)
         height = self.plane.scale(self.height)
 
-        if self.plane.is_in_screen(self.rect, self.width, self.height):
-            # Draw the rectangle
-            pygame.draw.rect(self.plane.screen, self.color, [*rect, width, height], self.line_width)
+        # Draw the rectangle
+        pygame.draw.rect(self.plane.screen, self.color, [*rect, width, height], self.line_width)
 
 class Line:
-    def __init__(self, plane, color : tuple | list, start : list, end : list, width : int = 1):
+    def __init__(self, plane, color : tuple | list, start : tuple | list, end : tuple | list, width : int = 1):
         """Create a Line Object on the Cartesian Plane
 
         Args:
             plane (Cartesian Plane): The Cartesian Plane
             color (tuple | list): The color of the line
-            start (list): The start position of the line
-            end (list): The end position of the line
+            start (tuple | list): The start position of the line
+            end (tuple | list): The end position of the line
             width (int, optional): Width of the line. Defaults to 1.
         """
         self.plane = plane
-        self.start = start
-        self.end = end
+        self.start = [*start]
+        self.end = [*end]
         self.color = color
         self.width = width
 
@@ -87,12 +85,11 @@ class Line:
         start = self.plane.plane_to_screen(self.start)
         end = self.plane.plane_to_screen(self.end)
 
-        if self.plane.is_in_screen(self.start, self.end[0] - self.start[0], self.end[1] - self.start[1]):
-            # Draw the line
-            pygame.draw.line(self.plane.screen, self.color, start, end, self.width)
+        # Draw the line
+        pygame.draw.line(self.plane.screen, self.color, start, end, self.width)
 
 class Path:
-    def __init__(self, plane, color : tuple | list, *points : tuple | list, length : int= 100):
+    def __init__(self, plane, color : tuple | list, *points : tuple | list, length : int=1000):
         """Create a Path Object on the Cartesian Plane
 
         Args:
@@ -107,26 +104,31 @@ class Path:
 
         self.plane.objects.append(self)
 
-    def add_point(self, point : list):
+    def add_points(self, *points : tuple|list):
         """Add a point to the path
 
         Args:
-            point (list): The point to add
+            point (tuple | list): The points to add
         """
-        if len(self.path) > self.length and self.length >= 0:
-            self.path.pop(0)
+        self.path.extend(points)
 
-        self.path.append(point)
+        if len(self.path) > self.length and self.length > 0:
+            self.path = self.path[len(self.path) - self.length:]
+
+    # A more efficient way to check if a point is in the screen, but don't work with rectangles and the points needs to be in the screen cordinates
+    def _is_in_screen(self, point : tuple|list):
+        return point[0] >= 0 and point[0] < self.plane.size[0] and point[1] >= 0 and point[1] < self.plane.size[1]
 
     def draw(self):
         """Draw the path
         """
-        # Convert Cartesian to Screen Coordinates
-        path = [self.plane.plane_to_screen(point) for point in self.path]
+        for point in self.path:
+            # Convert Cartesian to Screen Coordinates
+            point = self.plane.plane_to_screen(point)
 
-        # Draw the path
-        for point in path:
-            self.plane.screen.set_at(point, self.color)
+            # Removing duplicate and out of screen points
+            if self._is_in_screen(point):
+                self.plane.screen.set_at(point, self.color)
 
 class draw:
     def circle(surface, color : tuple | list, center : list, radius : int | float, width : int = 0):
@@ -162,4 +164,4 @@ class draw:
             end_pos (list): The end position of the line
             width (int, optional): Width of the line. Defaults to 1.
         """
-        pygame.draw.line(surface.screen, color, surface.plane_to_screen(start_pos), surface.plane_to_screen(end_pos), width=surface.scale(width))
+        pygame.draw.line(surface.screen, color, surface.plane_to_screen(start_pos), surface.plane_to_screen(end_pos), width=width)
