@@ -30,6 +30,7 @@ class CartesianPlane:
 
         # Blocking movement of the plane
         self.block_movement = False
+        self.focus = None
 
         # track mouse position
         self._last_pos = None
@@ -43,6 +44,12 @@ class CartesianPlane:
 
         # Debug Info
         self.debug_info = {}
+
+    @property
+    def size(self) -> list:
+        """Get the size of the Cartesian Plane
+        """
+        return self._size
 
     def plane_to_screen(self, point : list | tuple) -> list:
         """Convert Cartesian Coordinates to Screen Coordinates
@@ -110,8 +117,10 @@ class CartesianPlane:
         Args:
             wheel (int): The amount of wheel movement
         """
+
         mouse_pos = pygame.mouse.get_pos()
         before_zooming = self.screen_to_plane(mouse_pos)
+
         if wheel > 0 and self.scale_factor < 100:
             self.scale_factor *= 1.1
 
@@ -130,39 +139,37 @@ class CartesianPlane:
         for key, value in kwargs.items():
             self.debug_info[key] = value
 
-    def get_events(self, internal_events : bool = True) -> list:
-        """Handle events
-
-        Args:
-            event (pygame.locals): The event to handle
+    def handle_events(self, events) -> list:
+        """Handle internal events
         """
-        events = pygame.event.get()
 
-        if internal_events:
-            for event in events:
-                if event.type == QUIT:
-                    pygame.quit()
-                    quit()
+        for event in events:
+            if event.type == QUIT:
+                pygame.quit()
+                quit()
 
-                if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                    self._move_plane = True
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                self._move_plane = True
 
-                if event.type == MOUSEBUTTONUP and event.button == 1:
-                    self._move_plane = False
-                    self._last_pos = None
+            if event.type == MOUSEBUTTONUP and event.button == 1:
+                self._move_plane = False
+                self._last_pos = None
 
-                if event.type == MOUSEWHEEL:
-                    self._zooming(event.y)
+            if event.type == MOUSEWHEEL:
+                self._zooming(event.y)
 
-                if event.type == WINDOWSIZECHANGED:
-                    self._size[0] = event.x
-                    self._size[1] = event.y
+            if event.type == WINDOWSIZECHANGED:
+                self._size[0] = event.x
+                self._size[1] = event.y
 
-        return events
 
-    def update(self):
+    def update(self, internal_events : bool = True):
         """Update the Cartesian Plane
         """
+
+        if internal_events:
+            self.handle_events(pygame.event.get())
+
         if self._move_plane:
             self._move_axis()
 
@@ -195,10 +202,3 @@ class CartesianPlane:
             offset += text.get_height()
 
         pygame.display.flip()
-
-plane = CartesianPlane((800, 600))
-
-while True:
-    plane.get_events()
-
-    plane.update()
